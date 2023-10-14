@@ -332,7 +332,16 @@ namespace LiveSplit.UI.Components
         private void DrawIcon(Graphics g, Pen pen, Image icon, float x, float y)
         {
             if (icon != null)
-                g.DrawImage(icon, x - _settings.IconSize / 2, y - _settings.IconSize / 2, _settings.IconSize, _settings.IconSize);
+            {
+                if(_settings.FlipGraph)
+                {
+                    g.DrawImage(icon, x - _settings.IconSize / 2, y + _settings.IconSize / 2, _settings.IconSize, -_settings.IconSize);
+                }
+                else
+                {
+                    g.DrawImage(icon, x - _settings.IconSize / 2, y - _settings.IconSize / 2, _settings.IconSize, _settings.IconSize);
+                }               
+            }
         }
 
         private void DrawEllipseShadowed(Graphics g, Brush brush, float x, float y, float width, float height, bool flipShadow)
