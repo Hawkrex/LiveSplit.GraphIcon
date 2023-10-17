@@ -56,6 +56,7 @@
       <DependentUpon>GraphIconDedicatedWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Components\GraphIconFactory.cs" />
+    <Compile Include="UI\Components\GraphIconSeparatorComponent.cs" />
     <Compile Include="UI\Components\GraphIconSettings.cs">
       <SubType>UserControl</SubType>
     </Compile>

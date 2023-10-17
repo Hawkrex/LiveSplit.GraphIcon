@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace LiveSplit.UI.Components
 {
@@ -25,15 +26,21 @@ namespace LiveSplit.UI.Components
             {
                 CurrentState = state
             };
-            InternalComponent = new ComponentRendererComponent();
-            var components = new List<IComponent>();
-            components.Add(new GraphIconComponent(Settings));
-            InternalComponent.VisibleComponents = components;
-            state.ComparisonRenamed += state_ComparisonRenamed;
 
+            InternalComponent = new ComponentRendererComponent();
+
+            var components = new List<IComponent>
+            {
+                new GraphIconSeparatorComponent(Settings) { LockToBottom = true },
+                new GraphIconComponent(Settings),
+                new GraphIconSeparatorComponent(Settings) { LockToBottom = false }
+            };
+
+            InternalComponent.VisibleComponents = components;
+            state.ComparisonRenamed += StateComparisonRenamed;
         }
 
-        void state_ComparisonRenamed(object sender, EventArgs e)
+        private void StateComparisonRenamed(object sender, EventArgs e)
         {
             var args = (RenameEventArgs)e;
             if (Settings.Comparison == args.OldName)
@@ -49,20 +56,20 @@ namespace LiveSplit.UI.Components
             return Settings;
         }
 
-        public void SetSettings(System.Xml.XmlNode settings)
+        public void SetSettings(XmlNode settings)
         {
             Settings.SetSettings(settings);
         }
 
-        public System.Xml.XmlNode GetSettings(System.Xml.XmlDocument document)
+        public XmlNode GetSettings(XmlDocument document)
         {
             return Settings.GetSettings(document);
         }
 
-        public string ComponentName
-            => "Graph Icon" + (Settings.Comparison == "Current Comparison"
-                ? ""
-                : " (" + CompositeComparisons.GetShortComparisonName(Settings.Comparison) + ")");
+        public string ComponentName => "Graph Icon" + 
+            (Settings.Comparison == "Current Comparison"
+                ? string.Empty
+                : $" ({CompositeComparisons.GetShortComparisonName(Settings.Comparison)})");
 
         public float HorizontalWidth => InternalComponent.HorizontalWidth;
 
@@ -85,7 +92,9 @@ namespace LiveSplit.UI.Components
         public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
             if (invalidator != null)
+            {
                 InternalComponent.Update(invalidator, state, width, height, mode);
+            }
         }
 
         public void Dispose()
